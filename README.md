@@ -36,19 +36,35 @@ Or use any static file server — there is nothing to build.
 
 ## 🎟 Ticketing roadmap
 
-1. **Now** — booking buttons link out to BookMyShow and District listings; the on-site seat picker is a front-end preview.
+1. **Now** — "Book Tickets" buttons link straight to each show's BookMyShow /
+   District page (URLs editable per show in the admin panel).
 2. **Next** — direct booking with a seat-allotment split: a block of seats reserved for direct sales, the rest listed on partner platforms (no double-booking risk, no API needed).
 3. **Later** — official partner/API integration for true real-time shared inventory, plus payment gateway (Razorpay/UPI) on our own platform.
 
-## 📸 Adding photos & videos to the gallery (no code needed)
+## 🎛 Admin panel (for the client — no GitHub needed)
 
-1. Open the [`media/`](media/) folder on GitHub
-2. Click **Add file → Upload files**, drag in your photos/clips, click **Commit changes**
-3. Done — the live site's gallery updates itself in about a minute
+The site has a built-in admin at **`/admin/`** (e.g. `https://<site-url>/admin/`).
+The client enters an **access key** once and can then, from any browser or phone:
 
-Filenames become captions (`andha-yug-act-2.jpg` → "Andha yug act 2").
-Images: jpg/png/webp/gif/avif · Videos: mp4/webm/m4v, keep under ~50 MB.
-This also works from a phone browser — handy for uploading right after a show.
+- **Shows tab** — edit show titles, dates, venues, prices, and the BookMyShow /
+  District ticket links; add or remove shows
+- **Homepage Slider tab** — upload/delete the full-screen hero photos
+- **Gallery tab** — upload/delete gallery photos and video clips
+
+Every change is committed to this repo automatically ("… (via admin)" commit
+messages) and is live on the site in about a minute. Full history, revert anytime.
+
+### Creating the client's access key (owner does this once)
+
+1. GitHub → **Settings → Developer settings → Personal access tokens →
+   Fine-grained tokens → Generate new token**
+2. Repository access: **Only select repositories** → this repo
+3. Permissions: **Contents → Read and write** (nothing else)
+4. Expiration: up to you (e.g. 1 year); generate and send the key to the client
+
+The key only allows editing this one repository's content. Revoke or rotate it
+anytime from the same GitHub page. Media can also still be uploaded directly via
+GitHub's web UI into `media/hero/` and `media/gallery/` if ever needed.
 
 ## 🖼 Replacing placeholder content
 
