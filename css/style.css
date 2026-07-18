@@ -739,6 +739,7 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
 .contact-form__submit { justify-self: start; margin-top: 0.3rem; }
 
 .contact-card__sent { text-align: center; padding: 2.5rem 1rem; display: grid; justify-items: center; gap: 0.6rem; }
+.contact-card__sent[hidden] { display: none; }
 .contact-card__sent svg { width: 64px; height: 64px; color: var(--gold); margin-bottom: 0.5rem; }
 .contact-card__sent h3 { font-size: 1.7rem; }
 .contact-card__sent p { color: var(--ink-dim); margin-bottom: 1rem; }
