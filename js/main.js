@@ -349,11 +349,19 @@ function closeLightbox() {
   document.body.style.overflow = "";
 }
 
+// ---------- Contact page: show thank-you after redirect ----------
+const contactSent = document.getElementById("contactSent");
+if (contactSent && new URLSearchParams(location.search).get("sent") === "1") {
+  contactSent.hidden = false;
+  const cf = document.getElementById("contactForm");
+  if (cf) cf.style.display = "none";
+}
+
 // ---------- Newsletter ----------
 const nlForm = document.getElementById("newsletterForm");
 const nlMsg = document.getElementById("newsletterMsg");
 
-nlForm.addEventListener("submit", (e) => {
+if (nlForm) nlForm.addEventListener("submit", (e) => {
   e.preventDefault();
   const email = nlForm.email.value.trim();
   const valid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
