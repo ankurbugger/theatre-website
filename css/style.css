@@ -704,6 +704,59 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
   font-size: 0.78rem; color: var(--ink-faint);
 }
 
+/* ---------- Sub-page shared ---------- */
+.page-head {
+  text-align: center;
+  padding-top: calc(var(--nav-h) + clamp(3rem, 6vw, 5rem));
+  padding-bottom: clamp(2rem, 4vw, 3rem);
+}
+.page-head__sub {
+  color: var(--ink-dim); max-width: 54ch; margin: 0.8rem auto 0; font-weight: 300;
+}
+
+.section__more { text-align: center; margin-top: 2.4rem; }
+.section__more--left { text-align: left; margin-top: 1.8rem; }
+
+/* ---------- About page: vision/mission cards ---------- */
+.vm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(270px, 1fr)); gap: 1.4rem; }
+.vm-card {
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: 18px;
+  padding: 2rem 1.8rem;
+  transition: transform 0.3s var(--ease), border-color 0.25s;
+}
+.vm-card:hover { transform: translateY(-4px); border-color: rgba(224,168,60,0.35); }
+.vm-card svg { width: 40px; height: 40px; color: var(--gold); margin-bottom: 1.1rem; }
+.vm-card h3 { font-size: 1.35rem; margin-bottom: 0.6rem; }
+.vm-card p { color: var(--ink-dim); font-size: 0.92rem; font-weight: 300; }
+
+.about-page__story { padding-top: 0; }
+
+/* ---------- Artists page ---------- */
+.artists-page { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; }
+.artist-card {
+  display: flex; gap: 1.2rem; align-items: flex-start;
+  background: var(--bg-card); border: 1px solid var(--line); border-radius: 18px;
+  padding: 1.5rem;
+  transition: transform 0.3s var(--ease), border-color 0.25s;
+}
+.artist-card:hover { transform: translateY(-4px); border-color: rgba(224,168,60,0.35); }
+.artist-card .artist__ph {
+  width: 84px; margin: 0; flex-shrink: 0;
+  font-size: 1.3rem;
+}
+.artist-card__body h3 { font-size: 1.25rem; }
+.artist-card__role {
+  font-family: var(--font-mono); font-size: 0.64rem; letter-spacing: 0.18em;
+  text-transform: uppercase; color: var(--gold); margin: 0.25rem 0 0.55rem;
+}
+.artist-card__note { color: var(--ink-dim); font-size: 0.88rem; font-weight: 300; }
+
+/* ---------- Gallery page ---------- */
+.gallery__empty {
+  grid-column: 1 / -1; text-align: center; color: var(--ink-faint);
+  padding: 4rem 1rem; border: 1px dashed var(--line); border-radius: 16px;
+}
+
 /* ---------- Contact page ---------- */
 .contact-page { padding-top: calc(var(--nav-h) + clamp(3rem, 6vw, 5rem)); }
 .contact-page__sub { color: var(--ink-dim); max-width: 52ch; margin: 0.8rem auto 0; font-weight: 300; }

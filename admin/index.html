@@ -54,6 +54,8 @@
       <button class="tab is-active" data-tab="shows">🎭 Shows</button>
       <button class="tab" data-tab="hero">🖼️ Homepage Slider</button>
       <button class="tab" data-tab="gallery">📸 Gallery</button>
+      <button class="tab" data-tab="artists">👥 Artists</button>
+      <button class="tab" data-tab="productions">🎬 Productions</button>
     </nav>
 
     <p class="deploy-note">Changes go live on the website in about a minute after saving.</p>
@@ -95,6 +97,34 @@
       </div>
       <p class="panel__hint">Photos and short video clips for the "From the Wings" gallery. The file name becomes the caption — e.g. <code>andha-yug-curtain-call.jpg</code> shows as "Andha yug curtain call". Keep videos under 25&nbsp;MB.</p>
       <div class="mediagrid" id="galleryGrid"></div>
+    </section>
+
+    <!-- ARTISTS -->
+    <section class="panel" id="panel-artists">
+      <div class="panel__head">
+        <h2>Cast &amp; crew</h2>
+        <button class="btn btn--ghost" id="addArtistBtn">+ Add a person</button>
+      </div>
+      <p class="panel__hint">The first 4 people appear on the homepage; everyone appears on the Artists page. Drag the order by editing top-to-bottom — the list shows in this order.</p>
+      <div id="artistsList"></div>
+      <div class="savebar">
+        <button class="btn btn--gold" id="saveArtistsBtn">Save all artists</button>
+        <span class="savebar__status" id="artistsStatus" role="status"></span>
+      </div>
+    </section>
+
+    <!-- PRODUCTIONS -->
+    <section class="panel" id="panel-productions">
+      <div class="panel__head">
+        <h2>Productions / Journey</h2>
+        <button class="btn btn--ghost" id="addProductionBtn">+ Add a production</button>
+      </div>
+      <p class="panel__hint">Shown in the "Our Journey Begins" section on the homepage and on the Productions page. Add every show you stage — this list is your company's growing history.</p>
+      <div id="productionsList"></div>
+      <div class="savebar">
+        <button class="btn btn--gold" id="saveProductionsBtn">Save all productions</button>
+        <span class="savebar__status" id="productionsStatus" role="status"></span>
+      </div>
     </section>
   </div>
 

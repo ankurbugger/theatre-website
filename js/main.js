@@ -165,6 +165,101 @@ async function loadShows() {
 }
 loadShows();
 
+// ---------- Artists from data/artists.json ----------
+async function loadArtists() {
+  const home = document.getElementById("artistsGrid");
+  const page = document.getElementById("artistsPageGrid");
+  if (!home && !page) return;
+  try {
+    const res = await fetch("data/artists.json", { cache: "no-cache" });
+    if (!res.ok) return;
+    const { artists } = await res.json();
+    if (!Array.isArray(artists) || !artists.length) return;
+
+    const initials = (name) =>
+      name.split(/\s+/).map((w) => w[0] || "").join("").slice(0, 2).toUpperCase();
+
+    if (home) {
+      home.innerHTML = "";
+      artists.slice(0, 4).forEach((a, i) => {
+        const el = document.createElement("article");
+        el.className = "artist";
+        el.innerHTML = `
+          <div class="artist__ph artist__ph--${(i % 6) + 1}"><span>${esc(initials(a.name))}</span></div>
+          <h3>${esc(a.name)}</h3>
+          <p>${esc(a.role)}</p>`;
+        home.appendChild(el);
+      });
+    }
+
+    if (page) {
+      page.innerHTML = "";
+      artists.forEach((a, i) => {
+        const el = document.createElement("article");
+        el.className = "artist-card reveal";
+        el.innerHTML = `
+          <div class="artist__ph artist__ph--${(i % 6) + 1}"><span>${esc(initials(a.name))}</span></div>
+          <div class="artist-card__body">
+            <h3>${esc(a.name)}</h3>
+            <p class="artist-card__role">${esc(a.role)}</p>
+            ${a.note ? `<p class="artist-card__note">${esc(a.note)}</p>` : ""}
+          </div>`;
+        page.appendChild(el);
+        io.observe(el);
+      });
+    }
+  } catch {
+    /* keep whatever is there */
+  }
+}
+loadArtists();
+
+// ---------- Productions from data/productions.json ----------
+async function loadProductions() {
+  const home = document.getElementById("journeyGrid");
+  const page = document.getElementById("productionsPageGrid");
+  if (!home && !page) return;
+  try {
+    const res = await fetch("data/productions.json", { cache: "no-cache" });
+    if (!res.ok) return;
+    const { productions } = await res.json();
+    if (!Array.isArray(productions)) return;
+
+    const card = (p) => {
+      const el = document.createElement("article");
+      el.className = "archive__item";
+      el.innerHTML = `
+        <span class="archive__year">${esc(p.year)}</span>
+        <h3>${esc(p.title)}</h3>
+        <p>${esc(p.detail)}</p>`;
+      return el;
+    };
+
+    if (home) {
+      home.innerHTML = "";
+      productions.slice(0, 5).forEach((p) => home.appendChild(card(p)));
+      const cta = document.createElement("article");
+      cta.className = "archive__item archive__item--cta";
+      cta.innerHTML = `<h3>Want us in your city?</h3>
+        <a class="btn btn--ghost" href="contact.html">Invite Us ↗</a>`;
+      home.appendChild(cta);
+    }
+
+    if (page) {
+      page.innerHTML = "";
+      productions.forEach((p) => {
+        const el = card(p);
+        el.classList.add("reveal");
+        page.appendChild(el);
+        io.observe(el);
+      });
+    }
+  } catch {
+    /* keep whatever is there */
+  }
+}
+loadProductions();
+
 // ---------- GitHub media listing helper ----------
 const MEDIA_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/`;
 const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
@@ -255,11 +350,14 @@ loadHeroSlider();
 
 // ---------- Auto gallery from media/gallery ----------
 async function loadGallery() {
-  const grid = document.getElementById("galleryGrid");
+  const homeGrid = document.getElementById("galleryGrid");
+  const pageGrid = document.getElementById("galleryPageGrid");
+  const grid = pageGrid || homeGrid;
   if (!grid) return;
   try {
-    const files = await listMedia("media/gallery");
+    let files = await listMedia("media/gallery");
     if (!files.length) return; // folder empty — keep placeholder tiles
+    if (!pageGrid) files = files.slice(0, 6); // homepage shows a taste
 
     grid.innerHTML = "";
     grid.classList.add("gallery--media");

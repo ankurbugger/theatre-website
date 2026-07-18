@@ -85,6 +85,8 @@ async function unlock() {
   loadShows();
   loadMedia("hero");
   loadMedia("gallery");
+  loadListEditor("artists");
+  loadListEditor("productions");
 }
 
 $("gateForm").addEventListener("submit", async (e) => {
@@ -331,6 +333,146 @@ $("saveShowsBtn").addEventListener("click", async () => {
   }
   btn.disabled = false;
   setTimeout(() => (status.textContent = ""), 6000);
+});
+
+// ---------- generic list editors (artists, productions) ----------
+const LIST_EDITORS = {
+  artists: {
+    path: "data/artists.json",
+    key: "artists",
+    listEl: "artistsList",
+    addBtn: "addArtistBtn",
+    saveBtn: "saveArtistsBtn",
+    statusEl: "artistsStatus",
+    itemName: "person",
+    fields: [
+      ["name", "Name", "text"],
+      ["role", "Role (e.g. Director, Lead Actor)", "text"],
+      ["note", "One-line intro (shown on the Artists page)", "textarea"],
+    ],
+    blank: { name: "", role: "", note: "" },
+  },
+  productions: {
+    path: "data/productions.json",
+    key: "productions",
+    listEl: "productionsList",
+    addBtn: "addProductionBtn",
+    saveBtn: "saveProductionsBtn",
+    statusEl: "productionsStatus",
+    itemName: "production",
+    fields: [
+      ["year", "Tag (e.g. Season One, 2027)", "text"],
+      ["title", "Production title", "text"],
+      ["detail", "One-line detail (what & where)", "textarea"],
+    ],
+    blank: { year: "Season One", title: "", detail: "" },
+  },
+};
+
+const editorState = {};
+
+async function loadListEditor(kind) {
+  const conf = LIST_EDITORS[kind];
+  try {
+    const res = await gh(`/contents/${conf.path}?ref=${BRANCH}`);
+    if (!res.ok) throw new Error();
+    const json = await res.json();
+    editorState[kind] = {
+      sha: json.sha,
+      items: JSON.parse(b64decode(json.content))[conf.key] || [],
+    };
+    renderListEditor(kind);
+  } catch {
+    $(conf.listEl).innerHTML =
+      '<p class="mediagrid__empty">Could not load this list. Check your connection and refresh.</p>';
+  }
+}
+
+function renderListEditor(kind) {
+  const conf = LIST_EDITORS[kind];
+  const state = editorState[kind];
+  const list = $(conf.listEl);
+  list.innerHTML = "";
+  if (!state.items.length) {
+    list.innerHTML = `<p class="mediagrid__empty">Nothing here yet — use "+ Add" above to create the first entry.</p>`;
+  }
+  state.items.forEach((item, idx) => {
+    const card = document.createElement("div");
+    card.className = "show-edit";
+    const top = document.createElement("div");
+    top.className = "show-edit__top";
+    top.innerHTML = `<h3>${idx + 1}. ${item.name || item.title || "New " + conf.itemName}</h3>`;
+    const rm = document.createElement("button");
+    rm.className = "show-edit__remove";
+    rm.textContent = `Remove this ${conf.itemName}`;
+    rm.addEventListener("click", () => {
+      if (confirm(`Remove "${item.name || item.title || "this entry"}"?\n(Nothing happens until you press Save.)`)) {
+        state.items.splice(idx, 1);
+        renderListEditor(kind);
+      }
+    });
+    top.appendChild(rm);
+    card.appendChild(top);
+
+    const grid = document.createElement("div");
+    grid.className = "show-edit__grid";
+    conf.fields.forEach(([key, label, type]) => {
+      const field = document.createElement("div");
+      field.className = "field" + (type === "textarea" ? " field--full" : "");
+      const id = `${kind}-${idx}-${key}`;
+      const lab = document.createElement("label");
+      lab.htmlFor = id;
+      lab.textContent = label;
+      field.appendChild(lab);
+      const input = type === "textarea" ? document.createElement("textarea") : document.createElement("input");
+      if (type !== "textarea") input.type = "text";
+      input.id = id;
+      input.value = item[key] || "";
+      input.addEventListener("input", () => (item[key] = input.value));
+      field.appendChild(input);
+      grid.appendChild(field);
+    });
+    card.appendChild(grid);
+    list.appendChild(card);
+  });
+}
+
+Object.keys(LIST_EDITORS).forEach((kind) => {
+  const conf = LIST_EDITORS[kind];
+  $(conf.addBtn).addEventListener("click", () => {
+    if (!editorState[kind]) return;
+    editorState[kind].items.push({ ...conf.blank });
+    renderListEditor(kind);
+  });
+  $(conf.saveBtn).addEventListener("click", async () => {
+    const state = editorState[kind];
+    if (!state) return;
+    const btn = $(conf.saveBtn);
+    const status = $(conf.statusEl);
+    btn.disabled = true;
+    status.textContent = "Saving…";
+    try {
+      const res = await gh(`/contents/${conf.path}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          message: `Update ${conf.key} (via admin)`,
+          content: b64encode(JSON.stringify({ [conf.key]: state.items }, null, 2) + "\n"),
+          branch: BRANCH,
+          sha: state.sha,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      const out = await res.json();
+      state.sha = out.content.sha;
+      status.textContent = "Saved! Live on the website in about a minute.";
+      showToast("Saved ✔");
+    } catch {
+      status.textContent = "";
+      showToast("Could not save. Check your connection and try again.", true);
+    }
+    btn.disabled = false;
+    setTimeout(() => (status.textContent = ""), 6000);
+  });
 });
 
 // ---------- media managers ----------
