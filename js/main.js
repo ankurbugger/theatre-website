@@ -178,14 +178,22 @@ async function loadArtists() {
 
     const initials = (name) =>
       name.split(/\s+/).map((w) => w[0] || "").join("").slice(0, 2).toUpperCase();
+    const avatar = (a, i) =>
+      a.photo
+        ? `<div class="artist__ph artist__ph--photo"><img src="${esc(a.photo)}" alt="${esc(a.name)}" loading="lazy" /></div>`
+        : `<div class="artist__ph artist__ph--${(i % 6) + 1}"><span>${esc(initials(a.name))}</span></div>`;
+
+    const leads = artists.filter((a) => a.lead);
+    const rest = artists.filter((a) => !a.lead);
+    const ordered = [...leads, ...rest];
 
     if (home) {
       home.innerHTML = "";
-      artists.slice(0, 4).forEach((a, i) => {
+      ordered.slice(0, 4).forEach((a, i) => {
         const el = document.createElement("article");
         el.className = "artist";
         el.innerHTML = `
-          <div class="artist__ph artist__ph--${(i % 6) + 1}"><span>${esc(initials(a.name))}</span></div>
+          ${avatar(a, i)}
           <h3>${esc(a.name)}</h3>
           <p>${esc(a.role)}</p>`;
         home.appendChild(el);
@@ -193,12 +201,34 @@ async function loadArtists() {
     }
 
     if (page) {
+      // main leaders: big circular profiles at the top
+      const leadSection = document.getElementById("artistsLeadSection");
+      const leadGrid = document.getElementById("artistsLeadGrid");
+      const restHead = document.getElementById("artistsRestHead");
+      if (leadSection && leadGrid && leads.length) {
+        leadSection.hidden = false;
+        leadGrid.innerHTML = "";
+        leads.forEach((a, i) => {
+          const el = document.createElement("article");
+          el.className = "artist artist--lead reveal";
+          el.innerHTML = `
+            ${avatar(a, i)}
+            <h3>${esc(a.name)}</h3>
+            <p>${esc(a.role)}</p>
+            ${a.note ? `<p class="artist--lead__note">${esc(a.note)}</p>` : ""}`;
+          leadGrid.appendChild(el);
+          io.observe(el);
+        });
+        if (restHead && rest.length) restHead.hidden = false;
+      }
+
+      const others = leads.length ? rest : artists;
       page.innerHTML = "";
-      artists.forEach((a, i) => {
+      others.forEach((a, i) => {
         const el = document.createElement("article");
         el.className = "artist-card reveal";
         el.innerHTML = `
-          <div class="artist__ph artist__ph--${(i % 6) + 1}"><span>${esc(initials(a.name))}</span></div>
+          ${avatar(a, i + leads.length)}
           <div class="artist-card__body">
             <h3>${esc(a.name)}</h3>
             <p class="artist-card__role">${esc(a.role)}</p>

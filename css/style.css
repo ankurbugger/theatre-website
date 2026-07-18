@@ -731,6 +731,24 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
 
 .about-page__story { padding-top: 0; }
 
+/* photo avatars (uploaded via admin) */
+.artist__ph--photo { background: var(--bg-card); overflow: hidden; padding: 0; }
+.artist__ph--photo img {
+  width: 100%; height: 100%; object-fit: cover; border-radius: 50%;
+}
+
+/* main leaders on the artists page */
+.artists--leads { grid-template-columns: repeat(auto-fit, minmax(200px, 240px)); justify-content: center; }
+.artist--lead .artist__ph { width: min(100%, 170px); font-size: 2rem; }
+.artist--lead h3 { font-size: 1.25rem; }
+.artist--lead__note {
+  font-family: var(--font-body) !important;
+  font-size: 0.84rem !important; letter-spacing: 0 !important;
+  text-transform: none !important; color: var(--ink-dim) !important;
+  font-weight: 300; margin-top: 0.6rem !important;
+  max-width: 32ch; margin-left: auto; margin-right: auto;
+}
+
 /* ---------- Artists page ---------- */
 .artists-page { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 1.4rem; }
 .artist-card {

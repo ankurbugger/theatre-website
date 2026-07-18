@@ -348,9 +348,11 @@ const LIST_EDITORS = {
     fields: [
       ["name", "Name", "text"],
       ["role", "Role (e.g. Director, Lead Actor)", "text"],
+      ["lead", "⭐ Main member — show at the top with a big profile", "checkbox"],
       ["note", "One-line intro (shown on the Artists page)", "textarea"],
     ],
-    blank: { name: "", role: "", note: "" },
+    blank: { name: "", role: "", note: "", photo: "", lead: false },
+    avatar: { folder: "media/artists", key: "photo", label: "profile photo" },
   },
   productions: {
     path: "data/productions.json",
@@ -414,27 +416,121 @@ function renderListEditor(kind) {
     top.appendChild(rm);
     card.appendChild(top);
 
+    if (conf.avatar) card.appendChild(avatarRow(kind, item));
+
     const grid = document.createElement("div");
     grid.className = "show-edit__grid";
     conf.fields.forEach(([key, label, type]) => {
       const field = document.createElement("div");
-      field.className = "field" + (type === "textarea" ? " field--full" : "");
+      field.className = "field" + (type === "textarea" ? " field--full" : "") + (type === "checkbox" ? " field--check" : "");
       const id = `${kind}-${idx}-${key}`;
       const lab = document.createElement("label");
       lab.htmlFor = id;
       lab.textContent = label;
-      field.appendChild(lab);
-      const input = type === "textarea" ? document.createElement("textarea") : document.createElement("input");
-      if (type !== "textarea") input.type = "text";
-      input.id = id;
-      input.value = item[key] || "";
-      input.addEventListener("input", () => (item[key] = input.value));
-      field.appendChild(input);
+
+      if (type === "checkbox") {
+        const input = document.createElement("input");
+        input.type = "checkbox";
+        input.id = id;
+        input.checked = Boolean(item[key]);
+        input.addEventListener("change", () => (item[key] = input.checked));
+        field.appendChild(input);
+        field.appendChild(lab);
+      } else {
+        field.appendChild(lab);
+        const input = type === "textarea" ? document.createElement("textarea") : document.createElement("input");
+        if (type !== "textarea") input.type = "text";
+        input.id = id;
+        input.value = item[key] || "";
+        input.addEventListener("input", () => (item[key] = input.value));
+        field.appendChild(input);
+      }
       grid.appendChild(field);
     });
     card.appendChild(grid);
     list.appendChild(card);
   });
+}
+
+function avatarRow(kind, item) {
+  const conf = LIST_EDITORS[kind];
+  const row = document.createElement("div");
+  row.className = "poster-row";
+
+  const thumb = document.createElement("div");
+  thumb.className = "poster-row__thumb poster-row__thumb--round";
+  if (item[conf.avatar.key]) {
+    const img = document.createElement("img");
+    img.src = "../" + item[conf.avatar.key];
+    img.alt = "Profile photo";
+    thumb.appendChild(img);
+  } else {
+    thumb.textContent = "No photo";
+  }
+  row.appendChild(thumb);
+
+  const info = document.createElement("div");
+  info.className = "poster-row__info";
+  info.innerHTML =
+    "<strong>Profile photo (optional)</strong><span>A square photo looks best. Without one, a coloured circle with initials is shown. After uploading, press Save to publish.</span>";
+  const btns = document.createElement("div");
+  btns.className = "poster-row__btns";
+
+  const upLabel = document.createElement("label");
+  upLabel.className = "btn btn--ghost poster-row__upload";
+  upLabel.textContent = item[conf.avatar.key] ? "Replace photo" : "Upload photo";
+  const upInput = document.createElement("input");
+  upInput.type = "file";
+  upInput.accept = ".jpg,.jpeg,.png,.webp,.avif";
+  upInput.hidden = true;
+  upLabel.appendChild(upInput);
+  upInput.addEventListener("change", async () => {
+    const file = upInput.files[0];
+    upInput.value = "";
+    if (!file) return;
+    if (file.size > 8 * 1024 * 1024) {
+      showToast("Photo is too large (max 8 MB). Please compress it first.", true);
+      return;
+    }
+    upLabel.textContent = "Uploading…";
+    try {
+      const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+      const slug = sanitizeName((item.name || "member") + ext).replace(/\.[^.]+$/, "");
+      const fname = `${slug}-${Date.now()}${ext}`;
+      const content = await fileToBase64(file);
+      const res = await gh(`/contents/${conf.avatar.folder}/${encodeURIComponent(fname)}`, {
+        method: "PUT",
+        body: JSON.stringify({
+          message: `Upload ${conf.avatar.label}: ${fname} (via admin)`,
+          content,
+          branch: BRANCH,
+        }),
+      });
+      if (!res.ok) throw new Error();
+      item[conf.avatar.key] = `${conf.avatar.folder}/${fname}`;
+      renderListEditor(kind);
+      showToast('Photo uploaded ✔ Now press "Save" to publish it.');
+    } catch {
+      upLabel.textContent = "Upload photo";
+      showToast("Could not upload the photo. Try again.", true);
+    }
+  });
+  btns.appendChild(upLabel);
+
+  if (item[conf.avatar.key]) {
+    const rmBtn = document.createElement("button");
+    rmBtn.className = "show-edit__remove";
+    rmBtn.textContent = "Remove photo";
+    rmBtn.addEventListener("click", () => {
+      item[conf.avatar.key] = "";
+      renderListEditor(kind);
+      showToast('Photo removed — press "Save" to publish the change.');
+    });
+    btns.appendChild(rmBtn);
+  }
+  info.appendChild(btns);
+  row.appendChild(info);
+  return row;
 }
 
 Object.keys(LIST_EDITORS).forEach((kind) => {

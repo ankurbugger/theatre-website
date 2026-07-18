@@ -3,32 +3,44 @@
     {
       "name": "Ananya Verma",
       "role": "Artistic Director",
-      "note": "Founded the company with a single borrowed spotlight and a conviction that Indian stories deserve Indian stages."
+      "note": "Founded the company with a single borrowed spotlight and a conviction that Indian stories deserve Indian stages.",
+      "photo": "",
+      "lead": true
     },
     {
       "name": "Raghav Khanna",
       "role": "Director & Playwright",
-      "note": "Writes and directs our original productions — believes rehearsal rooms are where the real magic happens."
+      "note": "Writes and directs our original productions — believes rehearsal rooms are where the real magic happens.",
+      "photo": "",
+      "lead": true
     },
     {
       "name": "Meher Irani",
       "role": "Lead Actor",
-      "note": "Trained in theatre from Mumbai; brings a decade of stage craft to every role."
+      "note": "Trained in theatre from Mumbai; brings a decade of stage craft to every role.",
+      "photo": "",
+      "lead": false
     },
     {
       "name": "Sourav Das",
       "role": "Music Director",
-      "note": "Composes live scores that blend folk traditions with contemporary sound."
+      "note": "Composes live scores that blend folk traditions with contemporary sound.",
+      "photo": "",
+      "lead": false
     },
     {
       "name": "Priya Nair",
       "role": "Lighting Design",
-      "note": "Paints every scene with light — from a single candle-glow to a full storm."
+      "note": "Paints every scene with light — from a single candle-glow to a full storm.",
+      "photo": "",
+      "lead": false
     },
     {
       "name": "The Ensemble",
       "role": "Actors · Stagehands · Dreamers",
-      "note": "The hands and hearts behind every curtain call."
+      "note": "The hands and hearts behind every curtain call.",
+      "photo": "",
+      "lead": false
     }
   ]
 }

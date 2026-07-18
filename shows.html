@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Gallery — Rangmanch Theatre Company</title>
-  <meta name="description" content="Production stills, rehearsal moments and backstage life at Rangmanch Theatre Company." />
+  <title>Shows & Tickets — Rangmanch Theatre Company</title>
+  <meta name="description" content="Current and upcoming shows by Rangmanch Theatre Company — dates, venues, and ticket booking." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
@@ -22,14 +22,14 @@
       <span>Rangmanch<em>Theatre Co.</em></span>
     </a>
     <nav class="nav__links" aria-label="Primary">
-      <a href="shows.html">Shows</a>
+      <a href="shows.html" aria-current="page">Shows</a>
       <a href="about.html">About</a>
       <a href="productions.html">Productions</a>
       <a href="artists.html">Artists</a>
-      <a href="gallery.html" aria-current="page">Gallery</a>
+      <a href="gallery.html">Gallery</a>
       <a href="contact.html">Contact</a>
     </nav>
-    <a class="btn btn--gold nav__cta" href="shows.html">Book Tickets</a>
+    <a class="btn btn--gold nav__cta" href="#showsGrid">Book Tickets</a>
     <button class="nav__burger" id="burger" aria-label="Open menu" aria-expanded="false">
       <span></span><span></span><span></span>
     </button>
@@ -42,30 +42,32 @@
     <a href="artists.html">Artists</a>
     <a href="gallery.html">Gallery</a>
     <a href="contact.html">Contact</a>
-    <a class="btn btn--gold" href="shows.html">Book Tickets</a>
+    <a class="btn btn--gold" href="#showsGrid">Book Tickets</a>
   </div>
 
   <main id="main">
 
   <section class="section page-head">
-    <p class="kicker reveal">Moments</p>
-    <h2 class="reveal">From the <em>Wings</em></h2>
-    <p class="page-head__sub reveal">Production stills, rehearsal-room chaos, quiet green-room
-    minutes, and the applause that makes it all worth it.</p>
+    <p class="kicker reveal">On Stage This Season</p>
+    <h2 class="reveal">Shows &amp; <em>Tickets</em></h2>
+    <p class="page-head__sub reveal">Dates, venues, and everything you need to find your seat.
+    Tickets are booked on BookMyShow or District — tap a show to begin.</p>
   </section>
 
   <section class="section" style="padding-top: 0;">
-    <div class="gallery" id="galleryPageGrid">
-      <p class="gallery__empty">Photos are on their way — check back after our next show! 🎭</p>
-    </div>
+    <div class="shows" id="showsGrid"></div>
   </section>
 
   <section class="bookstrip">
     <div class="bookstrip__glow" aria-hidden="true"></div>
     <div class="bookstrip__inner reveal">
-      <h2>Like what you see?<br/><em>Watch it live.</em></h2>
+      <h2>The curtain rises soon.<br/><em>Will you be there?</em></h2>
       <div class="bookstrip__actions">
-        <a class="btn btn--gold btn--lg" href="shows.html">Book Tickets</a>
+        <div class="bookstrip__partners">
+          <span>Tickets available on</span>
+          <a href="https://in.bookmyshow.com" target="_blank" rel="noopener">BookMyShow ↗</a>
+          <a href="https://www.district.in" target="_blank" rel="noopener">District ↗</a>
+        </div>
       </div>
     </div>
   </section>

@@ -173,6 +173,21 @@ body {
 .poster-row__btns { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
 .poster-row__upload { padding: 0.45rem 1.1rem; font-size: 0.82rem; cursor: pointer; }
 
+.poster-row__thumb--round {
+  width: 68px; height: 68px; border-radius: 50%;
+}
+.poster-row__thumb--round img { border-radius: 50%; }
+
+.field--check {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.55rem 0.2rem;
+}
+.field--check input[type="checkbox"] {
+  width: 18px; height: 18px; accent-color: var(--gold);
+  cursor: pointer; flex-shrink: 0;
+}
+.field--check label { cursor: pointer; font-size: 0.85rem; color: var(--ink); }
+
 .show-edit__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem 1.1rem; }
 .field { display: grid; gap: 0.3rem; }
 .field--full { grid-column: 1 / -1; }
