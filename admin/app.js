@@ -177,6 +177,84 @@ function renderShows() {
     top.appendChild(rm);
     card.appendChild(top);
 
+    // poster image
+    const posterRow = document.createElement("div");
+    posterRow.className = "poster-row";
+    const thumb = document.createElement("div");
+    thumb.className = "poster-row__thumb";
+    if (show.poster) {
+      const img = document.createElement("img");
+      img.src = "../" + show.poster;
+      img.alt = "Poster";
+      thumb.appendChild(img);
+    } else {
+      thumb.textContent = "No poster yet";
+    }
+    posterRow.appendChild(thumb);
+
+    const posterInfo = document.createElement("div");
+    posterInfo.className = "poster-row__info";
+    posterInfo.innerHTML =
+      '<strong>Show poster</strong><span>Portrait or landscape photo/artwork for this show’s card. After uploading, press “Save all shows” to publish.</span>';
+    const posterBtns = document.createElement("div");
+    posterBtns.className = "poster-row__btns";
+
+    const upLabel = document.createElement("label");
+    upLabel.className = "btn btn--ghost poster-row__upload";
+    upLabel.textContent = show.poster ? "Replace poster" : "Upload poster";
+    const upInput = document.createElement("input");
+    upInput.type = "file";
+    upInput.accept = ".jpg,.jpeg,.png,.webp,.avif";
+    upInput.hidden = true;
+    upLabel.appendChild(upInput);
+    upInput.addEventListener("change", async () => {
+      const file = upInput.files[0];
+      upInput.value = "";
+      if (!file) return;
+      if (file.size > 10 * 1024 * 1024) {
+        showToast("Poster is too large (max 10 MB). Please compress it first.", true);
+        return;
+      }
+      upLabel.textContent = "Uploading…";
+      try {
+        const ext = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+        const slug = sanitizeName((show.title || "show") + ext).replace(/\.[^.]+$/, "");
+        const name = `${slug}-${Date.now()}${ext}`;
+        const content = await fileToBase64(file);
+        const res = await gh(`/contents/media/posters/${encodeURIComponent(name)}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            message: `Upload show poster: ${name} (via admin)`,
+            content,
+            branch: BRANCH,
+          }),
+        });
+        if (!res.ok) throw new Error();
+        show.poster = `media/posters/${name}`;
+        renderShows();
+        showToast('Poster uploaded ✔ Now press "Save all shows" to publish it.');
+      } catch {
+        upLabel.textContent = "Upload poster";
+        showToast("Could not upload the poster. Try again.", true);
+      }
+    });
+    posterBtns.appendChild(upLabel);
+
+    if (show.poster) {
+      const rmPoster = document.createElement("button");
+      rmPoster.className = "show-edit__remove";
+      rmPoster.textContent = "Remove poster";
+      rmPoster.addEventListener("click", () => {
+        show.poster = "";
+        renderShows();
+        showToast('Poster removed — press "Save all shows" to publish the change.');
+      });
+      posterBtns.appendChild(rmPoster);
+    }
+    posterInfo.appendChild(posterBtns);
+    posterRow.appendChild(posterInfo);
+    card.appendChild(posterRow);
+
     const grid = document.createElement("div");
     grid.className = "show-edit__grid";
     SHOW_FIELDS.forEach(([key, label, type]) => {
@@ -220,7 +298,7 @@ $("addShowBtn").addEventListener("click", () => {
     title: "", tagline: "", language: "Hindi", genre: "Drama", duration: "",
     rating: "", description: "", date: "", venue: "", price: "",
     bookmyshow: "https://in.bookmyshow.com", district: "https://www.district.in",
-    theme: "crimson",
+    theme: "crimson", poster: "",
   });
   renderShows();
   window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" });

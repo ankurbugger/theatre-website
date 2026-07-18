@@ -154,6 +154,25 @@ body {
 }
 .show-edit__remove:hover { color: #f28b82; }
 
+.poster-row {
+  display: flex; align-items: center; gap: 1.1rem;
+  background: var(--bg-input); border: 1px solid var(--line); border-radius: 12px;
+  padding: 0.9rem 1rem; margin-bottom: 1.1rem; flex-wrap: wrap;
+}
+.poster-row__thumb {
+  width: 96px; height: 68px; border-radius: 8px; overflow: hidden;
+  background: #0a0a12; border: 1px dashed var(--line);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--ink-faint); font-size: 0.68rem; text-align: center;
+  flex-shrink: 0;
+}
+.poster-row__thumb img { width: 100%; height: 100%; object-fit: cover; }
+.poster-row__info { display: grid; gap: 0.15rem; flex: 1; min-width: 220px; }
+.poster-row__info strong { font-size: 0.88rem; }
+.poster-row__info span { font-size: 0.78rem; color: var(--ink-faint); }
+.poster-row__btns { display: flex; align-items: center; gap: 1rem; margin-top: 0.5rem; }
+.poster-row__upload { padding: 0.45rem 1.1rem; font-size: 0.82rem; cursor: pointer; }
+
 .show-edit__grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem 1.1rem; }
 .field { display: grid; gap: 0.3rem; }
 .field--full { grid-column: 1 / -1; }

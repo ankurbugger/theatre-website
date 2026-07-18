@@ -112,14 +112,18 @@ async function loadShows() {
       const titleBroken = esc(s.title).split(" ").length > 1
         ? esc(s.title).replace(" ", "<br/>")
         : esc(s.title);
+      const posterInner = s.poster
+        ? `<img class="poster__img" src="${esc(s.poster)}" alt="${esc(s.title)} poster" loading="lazy" />
+           <span class="poster__lang">${esc(s.language)}</span>`
+        : `<span class="poster__lang">${esc(s.language)}</span>
+           <div class="poster__art" aria-hidden="true">${POSTER_ART[theme]}</div>
+           <h3 class="poster__title">${titleBroken}</h3>
+           <p class="poster__tag">${esc(s.tagline)}</p>`;
       const card = document.createElement("article");
       card.className = "show-card reveal";
       card.innerHTML = `
-        <div class="show-card__poster poster poster--${theme}">
-          <span class="poster__lang">${esc(s.language)}</span>
-          <div class="poster__art" aria-hidden="true">${POSTER_ART[theme]}</div>
-          <h3 class="poster__title">${titleBroken}</h3>
-          <p class="poster__tag">${esc(s.tagline)}</p>
+        <div class="show-card__poster poster poster--${theme}${s.poster ? " poster--img" : ""}">
+          ${posterInner}
         </div>
         <div class="show-card__body">
           <div class="show-card__meta">
@@ -195,6 +199,7 @@ async function loadHeroSlider() {
   if (!files.length) return;
 
   const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const caption = document.getElementById("heroCaption");
   const slides = files.map((f, i) => {
     const el = document.createElement("div");
     el.className = "hero__slide" + (i === 0 ? " is-active" : "");
@@ -203,6 +208,15 @@ async function loadHeroSlider() {
     return el;
   });
   document.querySelector(".hero").classList.add("hero--has-slides");
+  const setCaption = (i) => {
+    if (!caption) return;
+    const text = captionFrom(files[i].name);
+    // hide captions for machine-named files (e.g. camera exports, UUIDs)
+    const digits = (text.match(/\d/g) || []).length;
+    const meaningful = digits / text.length < 0.3 && text.length <= 40;
+    caption.textContent = meaningful ? text : "";
+  };
+  setCaption(0);
 
   if (slides.length < 2) return;
 
@@ -227,6 +241,7 @@ async function loadHeroSlider() {
     current = (i + slides.length) % slides.length;
     slides[current].classList.add("is-active");
     dotEls[current].classList.add("is-active");
+    setCaption(current);
   }
 
   function restart() {

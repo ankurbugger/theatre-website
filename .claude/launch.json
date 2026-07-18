@@ -4,7 +4,7 @@
     {
       "name": "theatre-site",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "4173", "--directory", "/Users/ankurgupta/Desktop/Play"],
+      "runtimeArgs": ["/Users/ankurgupta/Desktop/Play/.claude/serve.py"],
       "port": 4173
     }
   ]
