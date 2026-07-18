@@ -40,6 +40,16 @@ Or use any static file server — there is nothing to build.
 2. **Next** — direct booking with a seat-allotment split: a block of seats reserved for direct sales, the rest listed on partner platforms (no double-booking risk, no API needed).
 3. **Later** — official partner/API integration for true real-time shared inventory, plus payment gateway (Razorpay/UPI) on our own platform.
 
+## 📸 Adding photos & videos to the gallery (no code needed)
+
+1. Open the [`media/`](media/) folder on GitHub
+2. Click **Add file → Upload files**, drag in your photos/clips, click **Commit changes**
+3. Done — the live site's gallery updates itself in about a minute
+
+Filenames become captions (`andha-yug-act-2.jpg` → "Andha yug act 2").
+Images: jpg/png/webp/gif/avif · Videos: mp4/webm/m4v, keep under ~50 MB.
+This also works from a phone browser — handy for uploading right after a show.
+
 ## 🖼 Replacing placeholder content
 
 - Swap the company name, shows, dates, venues, and prices in `index.html`

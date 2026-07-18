@@ -190,6 +190,115 @@ bmPay.addEventListener("click", () => {
   showToast("Direct payments launch soon — for now, please complete your booking on BookMyShow or District. 🎭");
 });
 
+// ---------- Auto gallery from /media on GitHub ----------
+const MEDIA_API = "https://api.github.com/repos/ankurbugger/theatre-website/contents/media";
+const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
+const VID_EXT = /\.(mp4|webm|m4v)$/i;
+
+function captionFrom(name) {
+  const base = name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
+  return base.charAt(0).toUpperCase() + base.slice(1);
+}
+
+async function loadGallery() {
+  const grid = document.getElementById("galleryGrid");
+  if (!grid) return;
+  try {
+    const res = await fetch(MEDIA_API, { headers: { Accept: "application/vnd.github+json" } });
+    if (!res.ok) return; // keep placeholder tiles
+    const files = (await res.json()).filter(
+      (f) => f.type === "file" && (IMG_EXT.test(f.name) || VID_EXT.test(f.name))
+    );
+    if (!files.length) return; // folder empty — keep placeholder tiles
+
+    grid.innerHTML = "";
+    grid.classList.add("gallery--media");
+    files.forEach((f, i) => {
+      const src = "media/" + encodeURIComponent(f.name);
+      const caption = captionFrom(f.name);
+      const fig = document.createElement("figure");
+      fig.className = "gallery__item gallery__item--media" + (i % 5 === 0 ? " gallery__item--big" : "");
+
+      if (VID_EXT.test(f.name)) {
+        const vid = document.createElement("video");
+        vid.src = src;
+        vid.muted = true;
+        vid.loop = true;
+        vid.playsInline = true;
+        vid.preload = "metadata";
+        fig.appendChild(vid);
+        fig.addEventListener("mouseenter", () => vid.play().catch(() => {}));
+        fig.addEventListener("mouseleave", () => vid.pause());
+      } else {
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = caption;
+        img.loading = "lazy";
+        fig.appendChild(img);
+      }
+
+      const cap = document.createElement("figcaption");
+      cap.textContent = caption;
+      fig.appendChild(cap);
+      fig.tabIndex = 0;
+      fig.setAttribute("role", "button");
+      fig.setAttribute("aria-label", "View " + caption);
+      fig.addEventListener("click", () => openLightbox(src, caption, VID_EXT.test(f.name)));
+      fig.addEventListener("keydown", (e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          openLightbox(src, caption, VID_EXT.test(f.name));
+        }
+      });
+      grid.appendChild(fig);
+    });
+  } catch {
+    /* offline or rate-limited — placeholder tiles stay */
+  }
+}
+loadGallery();
+
+// ---------- Lightbox ----------
+let lightbox = null;
+function openLightbox(src, caption, isVideo) {
+  if (!lightbox) {
+    lightbox = document.createElement("div");
+    lightbox.className = "lightbox";
+    lightbox.innerHTML = '<div class="lightbox__media"></div><p class="lightbox__caption"></p>';
+    lightbox.addEventListener("click", closeLightbox);
+    document.addEventListener("keydown", (e) => {
+      if (e.key === "Escape") closeLightbox();
+    });
+    document.body.appendChild(lightbox);
+  }
+  const slot = lightbox.querySelector(".lightbox__media");
+  slot.innerHTML = "";
+  if (isVideo) {
+    const vid = document.createElement("video");
+    vid.src = src;
+    vid.controls = true;
+    vid.autoplay = true;
+    vid.playsInline = true;
+    slot.appendChild(vid);
+  } else {
+    const img = document.createElement("img");
+    img.src = src;
+    img.alt = caption;
+    slot.appendChild(img);
+  }
+  lightbox.querySelector(".lightbox__caption").textContent = caption;
+  lightbox.classList.add("is-open");
+  document.body.style.overflow = "hidden";
+}
+
+function closeLightbox() {
+  if (!lightbox) return;
+  const vid = lightbox.querySelector("video");
+  if (vid) vid.pause();
+  lightbox.classList.remove("is-open");
+  document.body.style.overflow = "";
+}
+
 // ---------- Newsletter ----------
 const nlForm = document.getElementById("newsletterForm");
 const nlMsg = document.getElementById("newsletterMsg");
