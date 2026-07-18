@@ -1,0 +1,49 @@
+{
+  "shows": [
+    {
+      "title": "Andha Yug",
+      "tagline": "A war leaves no one innocent",
+      "language": "Hindi",
+      "genre": "Drama",
+      "duration": "1h 50m",
+      "rating": "4.8",
+      "description": "Dharamvir Bharati's timeless verse play on the last day of the Mahabharata war — reimagined with live percussion and shadow work.",
+      "date": "Sat–Sun, 26–27 Jul 2026 · 7:30 PM",
+      "venue": "Prithvi Theatre, Mumbai",
+      "price": "₹349 onwards",
+      "bookmyshow": "https://in.bookmyshow.com",
+      "district": "https://www.district.in",
+      "theme": "crimson"
+    },
+    {
+      "title": "Chandni Raatein",
+      "tagline": "A ghazal in three acts",
+      "language": "Hindustani",
+      "genre": "Musical",
+      "duration": "2h 10m",
+      "rating": "4.6",
+      "description": "An original musical woven from ghazals of the 1940s — two poets, one radio station, and a partition that separates more than land.",
+      "date": "Fri–Sun, 8–10 Aug 2026 · 8:00 PM",
+      "venue": "Kamani Auditorium, Delhi",
+      "price": "₹499 onwards",
+      "bookmyshow": "https://in.bookmyshow.com",
+      "district": "https://www.district.in",
+      "theme": "indigo"
+    },
+    {
+      "title": "The Last Monsoon",
+      "tagline": "Some storms arrive as people",
+      "language": "English",
+      "genre": "Original",
+      "duration": "1h 35m",
+      "rating": "4.9",
+      "description": "A new play about a fishing village, a vanishing coastline, and the family that refuses to leave. Winner — META Best New Script.",
+      "date": "Sat, 22 Aug 2026 · 6:00 PM & 9:00 PM",
+      "venue": "Ranga Shankara, Bengaluru",
+      "price": "₹299 onwards",
+      "bookmyshow": "https://in.bookmyshow.com",
+      "district": "https://www.district.in",
+      "theme": "teal"
+    }
+  ]
+}

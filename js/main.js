@@ -1,5 +1,8 @@
 /* Rangmanch Theatre Co. — interactions */
 
+const REPO_OWNER = "ankurbugger";
+const REPO_NAME = "theatre-website";
+
 // ---------- Sticky nav ----------
 const nav = document.getElementById("nav");
 const onScroll = () => nav.classList.toggle("is-scrolled", window.scrollY > 24);
@@ -18,11 +21,10 @@ function setMenu(open) {
 }
 burger.addEventListener("click", () => setMenu(mobileMenu.hidden));
 mobileMenu.addEventListener("click", (e) => {
-  if (e.target.closest("a") || e.target.closest("button")) setMenu(false);
+  if (e.target.closest("a")) setMenu(false);
 });
 
 // ---------- Scroll reveal ----------
-const revealEls = document.querySelectorAll(".reveal");
 const io = new IntersectionObserver(
   (entries) => {
     entries.forEach((entry, i) => {
@@ -35,10 +37,9 @@ const io = new IntersectionObserver(
   },
   { threshold: 0.12 }
 );
-revealEls.forEach((el) => io.observe(el));
+document.querySelectorAll(".reveal").forEach((el) => io.observe(el));
 
 // ---------- Animated counters ----------
-const counters = document.querySelectorAll("[data-count]");
 const fmt = new Intl.NumberFormat("en-IN");
 const counterIO = new IntersectionObserver(
   (entries) => {
@@ -60,7 +61,7 @@ const counterIO = new IntersectionObserver(
   },
   { threshold: 0.5 }
 );
-counters.forEach((el) => counterIO.observe(el));
+document.querySelectorAll("[data-count]").forEach((el) => counterIO.observe(el));
 
 // ---------- Toast ----------
 const toast = document.getElementById("toast");
@@ -72,149 +73,183 @@ function showToast(msg) {
   toastTimer = setTimeout(() => toast.classList.remove("is-visible"), 4000);
 }
 
-// ---------- Booking modal + seat map ----------
-const modal = document.getElementById("bookingModal");
-const seatmap = document.getElementById("seatmap");
-const bmShow = document.getElementById("bmShow");
-const bmSeats = document.getElementById("bmSeats");
-const bmTotal = document.getElementById("bmTotal");
-const bmPay = document.getElementById("bmPay");
-
-const SHOW_INFO = {
-  "Andha Yug": "Andha Yug · Prithvi Theatre, Mumbai · 26 Jul, 7:30 PM",
-  "Chandni Raatein": "Chandni Raatein · Kamani Auditorium, Delhi · 8 Aug, 8:00 PM",
-  "The Last Monsoon": "The Last Monsoon · Ranga Shankara, Bengaluru · 22 Aug, 6:00 PM",
+// ---------- Shows from data/shows.json ----------
+const POSTER_ART = {
+  crimson:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><circle cx="12" cy="12" r="9" stroke-dasharray="2 3"/><path d="M12 3v18M3 12h18"/></svg>',
+  indigo:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M17 4a7 7 0 1 0 0 16 8.5 8.5 0 0 1 0-16Z"/><circle cx="7" cy="7" r=".6"/><circle cx="5" cy="12" r=".6"/><circle cx="8" cy="17" r=".6"/></svg>',
+  teal:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1"><path d="M4 14c2-3 4-3 6 0s4 3 6 0 3-2 4-1M4 18c2-3 4-3 6 0s4 3 6 0 3-2 4-1M12 3v6M9 6l3 3 3-3"/></svg>',
 };
 
-const ROWS = ["A", "B", "C", "D", "E", "F"];
-const COLS = 10;
-const PREMIUM_ROWS = ["A", "B"];
-const PRICE = { premium: 699, regular: 349 };
-let selected = new Map();
-let lastFocused = null;
+const ICONS = {
+  calendar:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 21s-7-5.5-7-11a7 7 0 1 1 14 0c0 5.5-7 11-7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg>',
+  ticket:
+    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 9V7a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v2a3 3 0 0 0 0 6v2a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-2a3 3 0 0 0 0-6Z"/></svg>',
+};
 
-function buildSeatmap() {
-  seatmap.innerHTML = "";
-  selected.clear();
-  // deterministic-ish "sold" pattern so the map looks alive
-  const sold = new Set();
-  ROWS.forEach((r, ri) => {
-    for (let c = 1; c <= COLS; c++) {
-      if ((ri * 7 + c * 3) % 11 === 0 || (ri === 2 && (c === 4 || c === 5))) {
-        sold.add(`${r}${c}`);
-      }
-    }
-  });
-
-  ROWS.forEach((r) => {
-    const row = document.createElement("div");
-    row.className = "seatmap__row";
-    const label = document.createElement("span");
-    label.className = "seatmap__rowlabel";
-    label.textContent = r;
-    row.appendChild(label);
-
-    for (let c = 1; c <= COLS; c++) {
-      const id = `${r}${c}`;
-      const premium = PREMIUM_ROWS.includes(r);
-      const seat = document.createElement("button");
-      seat.type = "button";
-      seat.className = "seat" + (premium ? " seat--premium" : "");
-      seat.dataset.id = id;
-      seat.dataset.price = premium ? PRICE.premium : PRICE.regular;
-      seat.setAttribute("aria-label", `Seat ${id}${premium ? ", premium" : ""}`);
-      if (sold.has(id)) {
-        seat.classList.add("seat--sold");
-        seat.disabled = true;
-        seat.setAttribute("aria-label", `Seat ${id}, sold`);
-      }
-      seat.addEventListener("click", () => toggleSeat(seat));
-      row.appendChild(seat);
-    }
-    seatmap.appendChild(row);
-  });
-  updateSummary();
+function esc(s) {
+  const d = document.createElement("div");
+  d.textContent = s == null ? "" : String(s);
+  return d.innerHTML;
 }
 
-function toggleSeat(seat) {
-  const id = seat.dataset.id;
-  if (selected.has(id)) {
-    selected.delete(id);
-    seat.classList.remove("seat--selected");
-  } else {
-    if (selected.size >= 8) {
-      showToast("Maximum 8 seats per booking.");
-      return;
+async function loadShows() {
+  const grid = document.getElementById("showsGrid");
+  if (!grid) return;
+  try {
+    const res = await fetch("data/shows.json", { cache: "no-cache" });
+    if (!res.ok) return;
+    const { shows } = await res.json();
+    if (!Array.isArray(shows) || !shows.length) return;
+
+    grid.innerHTML = "";
+    shows.forEach((s) => {
+      const theme = ["crimson", "indigo", "teal"].includes(s.theme) ? s.theme : "crimson";
+      const titleBroken = esc(s.title).split(" ").length > 1
+        ? esc(s.title).replace(" ", "<br/>")
+        : esc(s.title);
+      const card = document.createElement("article");
+      card.className = "show-card reveal";
+      card.innerHTML = `
+        <div class="show-card__poster poster poster--${theme}">
+          <span class="poster__lang">${esc(s.language)}</span>
+          <div class="poster__art" aria-hidden="true">${POSTER_ART[theme]}</div>
+          <h3 class="poster__title">${titleBroken}</h3>
+          <p class="poster__tag">${esc(s.tagline)}</p>
+        </div>
+        <div class="show-card__body">
+          <div class="show-card__meta">
+            <span>${esc(s.genre)} · ${esc(s.duration)}</span>
+            <span class="rating">★ ${esc(s.rating)}</span>
+          </div>
+          <h3>${esc(s.title)}</h3>
+          <p>${esc(s.description)}</p>
+          <ul class="show-card__facts">
+            <li>${ICONS.calendar} ${esc(s.date)}</li>
+            <li>${ICONS.pin} ${esc(s.venue)}</li>
+            <li>${ICONS.ticket} ${esc(s.price)}</li>
+          </ul>
+          <div class="show-card__actions">
+            <a class="btn btn--gold" href="${esc(s.bookmyshow)}" target="_blank" rel="noopener">Book on BookMyShow</a>
+            <div class="partner-links">
+              <a href="${esc(s.district)}" target="_blank" rel="noopener">Also on District ↗</a>
+            </div>
+          </div>
+        </div>`;
+      grid.appendChild(card);
+      io.observe(card);
+    });
+
+    // ticker from live shows
+    const track = document.getElementById("tickerTrack");
+    if (track) {
+      const line = shows.map((s) => `${s.title} — ${s.venue}`).join("  ✦  ") + "  ✦  New season announced  ✦  ";
+      track.innerHTML = "";
+      for (let i = 0; i < 2; i++) {
+        const span = document.createElement("span");
+        span.textContent = line;
+        track.appendChild(span);
+      }
     }
-    selected.set(id, Number(seat.dataset.price));
-    seat.classList.add("seat--selected");
+  } catch {
+    /* keep whatever is there */
   }
-  updateSummary();
 }
+loadShows();
 
-function updateSummary() {
-  const total = [...selected.values()].reduce((a, b) => a + b, 0);
-  bmTotal.textContent = "₹" + fmt.format(total);
-  bmSeats.textContent = selected.size
-    ? `${selected.size} seat${selected.size > 1 ? "s" : ""}: ${[...selected.keys()].join(", ")}`
-    : "No seats selected";
-  bmPay.disabled = selected.size === 0;
-}
-
-function openBooking(showName) {
-  bmShow.textContent = SHOW_INFO[showName] || showName;
-  buildSeatmap();
-  modal.hidden = false;
-  document.body.style.overflow = "hidden";
-  lastFocused = document.activeElement;
-  modal.querySelector(".modal__close").focus();
-}
-
-function closeBooking() {
-  modal.hidden = true;
-  document.body.style.overflow = "";
-  if (lastFocused) lastFocused.focus();
-}
-
-document.querySelectorAll("[data-open-booking]").forEach((btn) =>
-  btn.addEventListener("click", () => openBooking(btn.dataset.show))
-);
-document.querySelectorAll("[data-close-booking]").forEach((el) =>
-  el.addEventListener("click", closeBooking)
-);
-document.addEventListener("keydown", (e) => {
-  if (e.key === "Escape" && !modal.hidden) closeBooking();
-});
-
-bmPay.addEventListener("click", () => {
-  showToast("Direct payments launch soon — for now, please complete your booking on BookMyShow or District. 🎭");
-});
-
-// ---------- Auto gallery from /media on GitHub ----------
-const MEDIA_API = "https://api.github.com/repos/ankurbugger/theatre-website/contents/media";
+// ---------- GitHub media listing helper ----------
+const MEDIA_BASE = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents/`;
 const IMG_EXT = /\.(jpe?g|png|webp|gif|avif)$/i;
 const VID_EXT = /\.(mp4|webm|m4v)$/i;
+
+async function listMedia(folder) {
+  const res = await fetch(MEDIA_BASE + folder, {
+    headers: { Accept: "application/vnd.github+json" },
+  });
+  if (!res.ok) return [];
+  return (await res.json()).filter(
+    (f) => f.type === "file" && (IMG_EXT.test(f.name) || VID_EXT.test(f.name))
+  );
+}
 
 function captionFrom(name) {
   const base = name.replace(/\.[^.]+$/, "").replace(/[-_]+/g, " ").trim();
   return base.charAt(0).toUpperCase() + base.slice(1);
 }
 
+// ---------- Hero slider from media/hero ----------
+async function loadHeroSlider() {
+  const wrap = document.getElementById("heroSlides");
+  const dots = document.getElementById("heroDots");
+  if (!wrap) return;
+  let files = [];
+  try {
+    files = (await listMedia("media/hero")).filter((f) => IMG_EXT.test(f.name));
+  } catch {
+    return;
+  }
+  if (!files.length) return;
+
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const slides = files.map((f, i) => {
+    const el = document.createElement("div");
+    el.className = "hero__slide" + (i === 0 ? " is-active" : "");
+    el.style.backgroundImage = `url("media/hero/${encodeURIComponent(f.name)}")`;
+    wrap.appendChild(el);
+    return el;
+  });
+  document.querySelector(".hero").classList.add("hero--has-slides");
+
+  if (slides.length < 2) return;
+
+  let current = 0;
+  let timer = null;
+
+  const dotEls = slides.map((_, i) => {
+    const b = document.createElement("button");
+    b.className = "hero__dot" + (i === 0 ? " is-active" : "");
+    b.setAttribute("aria-label", `Slide ${i + 1}`);
+    b.addEventListener("click", () => {
+      goTo(i);
+      restart();
+    });
+    dots.appendChild(b);
+    return b;
+  });
+
+  function goTo(i) {
+    slides[current].classList.remove("is-active");
+    dotEls[current].classList.remove("is-active");
+    current = (i + slides.length) % slides.length;
+    slides[current].classList.add("is-active");
+    dotEls[current].classList.add("is-active");
+  }
+
+  function restart() {
+    if (reduced) return;
+    clearInterval(timer);
+    timer = setInterval(() => goTo(current + 1), 6000);
+  }
+  restart();
+}
+loadHeroSlider();
+
+// ---------- Auto gallery from media/gallery ----------
 async function loadGallery() {
   const grid = document.getElementById("galleryGrid");
   if (!grid) return;
   try {
-    const res = await fetch(MEDIA_API, { headers: { Accept: "application/vnd.github+json" } });
-    if (!res.ok) return; // keep placeholder tiles
-    const files = (await res.json()).filter(
-      (f) => f.type === "file" && (IMG_EXT.test(f.name) || VID_EXT.test(f.name))
-    );
+    const files = await listMedia("media/gallery");
     if (!files.length) return; // folder empty — keep placeholder tiles
 
     grid.innerHTML = "";
     grid.classList.add("gallery--media");
     files.forEach((f, i) => {
-      const src = "media/" + encodeURIComponent(f.name);
+      const src = "media/gallery/" + encodeURIComponent(f.name);
       const caption = captionFrom(f.name);
       const fig = document.createElement("figure");
       fig.className = "gallery__item gallery__item--media" + (i % 5 === 0 ? " gallery__item--big" : "");

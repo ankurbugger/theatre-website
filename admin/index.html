@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Admin — Rangmanch Theatre Co.</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="admin.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎛️</text></svg>" />
+</head>
+<body>
+
+  <!-- ====== LOGIN GATE ====== -->
+  <div class="gate" id="gate">
+    <div class="gate__card">
+      <svg class="gate__mask" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+        <path d="M3 5c2.5-1 5-1.5 7-1.5S14.5 4 17 5c0 6-2 12-7 13C5 17 3 11 3 5Z" transform="translate(1.5 1.5) scale(.82)"/>
+        <path d="M8 8.5c.5.5 1.5.5 2 0M13 8.5c.5.5 1.5.5 2 0M8.5 12.5c1.5 1.2 4.5 1.2 6 0" transform="translate(1.5 1.5) scale(.82)"/>
+      </svg>
+      <h1>Website Admin</h1>
+      <p>Enter your access key to manage the website. If you don't have one, ask your website manager.</p>
+      <form id="gateForm">
+        <label class="sr-only" for="gateKey">Access key</label>
+        <input type="password" id="gateKey" placeholder="Paste your access key" autocomplete="off" required />
+        <button class="btn btn--gold" type="submit" id="gateBtn">Unlock Admin</button>
+      </form>
+      <p class="gate__error" id="gateError" role="alert"></p>
+    </div>
+  </div>
+
+  <!-- ====== ADMIN APP ====== -->
+  <div class="app" id="app" hidden>
+    <header class="app__bar">
+      <div class="app__brand">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
+          <path d="M3 5c2.5-1 5-1.5 7-1.5S14.5 4 17 5c0 6-2 12-7 13C5 17 3 11 3 5Z" transform="translate(1.5 1.5) scale(.82)"/>
+          <path d="M8 8.5c.5.5 1.5.5 2 0M13 8.5c.5.5 1.5.5 2 0M8.5 12.5c1.5 1.2 4.5 1.2 6 0" transform="translate(1.5 1.5) scale(.82)"/>
+        </svg>
+        <div>
+          <strong>Website Admin</strong>
+          <span>Rangmanch Theatre Co.</span>
+        </div>
+      </div>
+      <div class="app__baractions">
+        <a class="app__viewsite" href="../" target="_blank" rel="noopener">View site ↗</a>
+        <button class="app__lock" id="lockBtn">Lock</button>
+      </div>
+    </header>
+
+    <nav class="tabs" aria-label="Admin sections">
+      <button class="tab is-active" data-tab="shows">🎭 Shows</button>
+      <button class="tab" data-tab="hero">🖼️ Homepage Slider</button>
+      <button class="tab" data-tab="gallery">📸 Gallery</button>
+    </nav>
+
+    <p class="deploy-note">Changes go live on the website in about a minute after saving.</p>
+
+    <!-- SHOWS -->
+    <section class="panel is-active" id="panel-shows">
+      <div class="panel__head">
+        <h2>Shows &amp; ticket links</h2>
+        <button class="btn btn--ghost" id="addShowBtn">+ Add a show</button>
+      </div>
+      <div id="showsList"></div>
+      <div class="savebar">
+        <button class="btn btn--gold" id="saveShowsBtn">Save all shows</button>
+        <span class="savebar__status" id="showsStatus" role="status"></span>
+      </div>
+    </section>
+
+    <!-- HERO -->
+    <section class="panel" id="panel-hero">
+      <div class="panel__head">
+        <h2>Homepage slider photos</h2>
+        <label class="btn btn--gold upload-btn">
+          Upload photos
+          <input type="file" id="heroUpload" accept=".jpg,.jpeg,.png,.webp,.avif" multiple hidden />
+        </label>
+      </div>
+      <p class="panel__hint">These full-screen photos rotate behind the homepage headline. Use wide, landscape photos of your productions — 3 to 5 great ones is perfect.</p>
+      <div class="mediagrid" id="heroGrid"></div>
+    </section>
+
+    <!-- GALLERY -->
+    <section class="panel" id="panel-gallery">
+      <div class="panel__head">
+        <h2>Gallery photos &amp; videos</h2>
+        <label class="btn btn--gold upload-btn">
+          Upload media
+          <input type="file" id="galleryUpload" accept=".jpg,.jpeg,.png,.webp,.gif,.avif,.mp4,.webm,.m4v" multiple hidden />
+        </label>
+      </div>
+      <p class="panel__hint">Photos and short video clips for the "From the Wings" gallery. The file name becomes the caption — e.g. <code>andha-yug-curtain-call.jpg</code> shows as "Andha yug curtain call". Keep videos under 25&nbsp;MB.</p>
+      <div class="mediagrid" id="galleryGrid"></div>
+    </section>
+  </div>
+
+  <div class="toast" id="toast" role="status"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>
