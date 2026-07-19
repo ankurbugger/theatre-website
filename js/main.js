@@ -92,9 +92,14 @@ const ICONS = {
 };
 
 function esc(s) {
-  const d = document.createElement("div");
-  d.textContent = s == null ? "" : String(s);
-  return d.innerHTML;
+  return String(s ?? "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c])
+  );
+}
+
+// only allow real web links in href attributes
+function safeUrl(u) {
+  return /^https?:\/\//i.test(String(u ?? "").trim()) ? String(u).trim() : "#";
 }
 
 async function loadShows() {
@@ -138,9 +143,9 @@ async function loadShows() {
             <li>${ICONS.ticket} ${esc(s.price)}</li>
           </ul>
           <div class="show-card__actions">
-            <a class="btn btn--gold" href="${esc(s.bookmyshow)}" target="_blank" rel="noopener">Book on BookMyShow</a>
+            <a class="btn btn--gold" href="${esc(safeUrl(s.bookmyshow))}" target="_blank" rel="noopener">Book on BookMyShow</a>
             <div class="partner-links">
-              <a href="${esc(s.district)}" target="_blank" rel="noopener">Also on District ↗</a>
+              <a href="${esc(safeUrl(s.district))}" target="_blank" rel="noopener">Also on District ↗</a>
             </div>
           </div>
         </div>`;
