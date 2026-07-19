@@ -1,8 +1,8 @@
-# 🎭 Rangmanch Theatre Co. — Website
+# 🎭 Areeso Theatre — Website
 
 A cinematic, dark-theme website for our independent Indian theatre production company — built to showcase our shows, our people, and (soon) sell tickets directly.
 
-> **Note:** "Rangmanch Theatre Co." is a placeholder brand. Show titles, dates, artists, photos, and contact details are sample content to be replaced with the company's real information.
+> **Note:** Show titles, dates, artists, photos, and contact details are sample content to be replaced with the company's real information via the admin panel.
 
 ## ✨ Features
 

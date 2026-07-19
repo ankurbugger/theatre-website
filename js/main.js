@@ -1,4 +1,4 @@
-/* Rangmanch Theatre Co. — interactions */
+/* Areeso Theatre — interactions */
 
 const REPO_OWNER = "ankurbugger";
 const REPO_NAME = "theatre-website";
