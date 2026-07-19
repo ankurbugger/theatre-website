@@ -1,16 +1,9 @@
 {
   "artists": [
     {
-      "name": "Ananya Verma",
-      "role": "Artistic Director",
-      "note": "Founded the company with a single borrowed spotlight and a conviction that Indian stories deserve Indian stages.",
-      "photo": "",
-      "lead": true
-    },
-    {
-      "name": "Raghav Khanna",
-      "role": "Director & Playwright",
-      "note": "Writes and directs our original productions — believes rehearsal rooms are where the real magic happens.",
+      "name": "Parth",
+      "role": "Director",
+      "note": "Founder and director of Areeso Theatre — leading the company from its very first act.",
       "photo": "",
       "lead": true
     },
