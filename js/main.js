@@ -132,8 +132,8 @@ async function loadShows() {
         </div>
         <div class="show-card__body">
           <div class="show-card__meta">
-            <span>${esc(s.genre)} · ${esc(s.duration)}</span>
-            <span class="rating">★ ${esc(s.rating)}</span>
+            <span>${[s.genre, s.duration].filter(Boolean).map(esc).join(" · ")}</span>
+            ${s.rating ? `<span class="rating">★ ${esc(s.rating)}</span>` : ""}
           </div>
           <h3>${esc(s.title)}</h3>
           <p>${esc(s.description)}</p>
@@ -156,7 +156,9 @@ async function loadShows() {
     // ticker from live shows
     const track = document.getElementById("tickerTrack");
     if (track) {
-      const line = shows.map((s) => `${s.title} — ${s.venue}`).join("  ✦  ") + "  ✦  New season announced  ✦  ";
+      let line = shows.map((s) => `${s.title} — ${s.venue}`).join("  ✦  ") + "  ✦  ";
+      // repeat short lines so the marquee stays dense with few shows
+      while (line.length < 160) line += line;
       track.innerHTML = "";
       for (let i = 0; i < 2; i++) {
         const span = document.createElement("span");
