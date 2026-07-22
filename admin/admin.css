@@ -67,6 +67,7 @@ body {
   box-shadow: 0 30px 90px rgba(0,0,0,0.6);
 }
 .gate__mask { width: 54px; height: 54px; color: var(--gold); margin: 0 auto 1.1rem; }
+.gate__logo { width: 72px; height: 72px; object-fit: contain; margin: 0 auto 1.1rem; display: block; }
 .gate__card h1 { font-family: var(--font-display); font-size: 1.8rem; margin-bottom: 0.5rem; }
 .gate__card > p { color: var(--ink-dim); font-size: 0.9rem; margin-bottom: 1.6rem; }
 .gate__card form { display: grid; gap: 0.8rem; }
@@ -89,6 +90,7 @@ body {
 }
 .app__brand { display: flex; align-items: center; gap: 0.75rem; }
 .app__brand svg { width: 38px; height: 38px; color: var(--gold); }
+.app__logo { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; }
 .app__brand strong { display: block; font-family: var(--font-display); font-size: 1.15rem; line-height: 1.2; }
 .app__brand span { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-faint); }
 .app__baractions { display: flex; align-items: center; gap: 1.1rem; }

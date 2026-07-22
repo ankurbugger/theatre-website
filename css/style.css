@@ -125,6 +125,7 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
   color: var(--gold); margin-top: -2px;
 }
 .nav__mask { width: 34px; height: 34px; color: var(--gold); flex-shrink: 0; }
+.nav__logo { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; }
 
 .nav__links { display: flex; gap: 1.7rem; margin-left: auto; }
 .nav__links a {
