@@ -480,6 +480,7 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
 }
 .about__frame svg { width: 44%; color: var(--gold); opacity: 0.85; }
+.about__frame .about__logo { width: 56%; height: auto; object-fit: contain; filter: drop-shadow(0 6px 24px rgba(0,0,0,0.4)); }
 .about__frame p {
   font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.05rem, 1.8vw, 1.3rem); color: var(--ink-dim); line-height: 1.5;
