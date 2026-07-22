@@ -470,17 +470,23 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
 
 .about__visual { position: relative; }
 .about__frame {
-  aspect-ratio: 4 / 5; border-radius: 20px;
+  min-height: min(88vw, 540px); border-radius: 20px;
   background:
     radial-gradient(ellipse 80% 60% at 50% 15%, rgba(242,193,78,0.16), transparent 65%),
     linear-gradient(160deg, #1c1424, #0e0b14 60%);
   border: 1px solid var(--line);
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  gap: 1.6rem; padding: 2rem; text-align: center;
+  gap: 1.6rem; padding: 2.2rem; text-align: center;
   box-shadow: 0 30px 80px rgba(0,0,0,0.5);
 }
 .about__frame svg { width: 44%; color: var(--gold); opacity: 0.85; }
 .about__frame .about__logo { width: 56%; height: auto; object-fit: contain; filter: drop-shadow(0 6px 24px rgba(0,0,0,0.4)); }
+.about__logopanel {
+  width: min(62%, 260px);
+  background: #f7f3ea; border-radius: 16px; padding: 1.1rem 1.2rem;
+  box-shadow: 0 16px 44px rgba(0,0,0,0.5);
+}
+.about__logo--full { width: 100%; height: auto; display: block; }
 .about__frame p {
   font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.05rem, 1.8vw, 1.3rem); color: var(--ink-dim); line-height: 1.5;
