@@ -112,6 +112,8 @@ async function loadShows() {
     if (!Array.isArray(shows) || !shows.length) return;
 
     grid.innerHTML = "";
+    grid.classList.toggle("shows--single", shows.length === 1);
+    grid.classList.toggle("shows--two", shows.length === 2);
     shows.forEach((s) => {
       const theme = ["crimson", "indigo", "teal"].includes(s.theme) ? s.theme : "crimson";
       const titleBroken = esc(s.title).split(" ").length > 1
@@ -144,9 +146,7 @@ async function loadShows() {
           </ul>
           <div class="show-card__actions">
             <a class="btn btn--gold" href="${esc(safeUrl(s.bookmyshow))}" target="_blank" rel="noopener">Book on BookMyShow</a>
-            <div class="partner-links">
-              <a href="${esc(safeUrl(s.district))}" target="_blank" rel="noopener">Also on District ↗</a>
-            </div>
+            <a class="btn btn--district" href="${esc(safeUrl(s.district))}" target="_blank" rel="noopener">Book on District</a>
           </div>
         </div>`;
       grid.appendChild(card);

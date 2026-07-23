@@ -370,6 +370,31 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
 
 /* ---------- Show cards ---------- */
 .shows { display: grid; grid-template-columns: repeat(auto-fit, minmax(310px, 1fr)); gap: 1.6rem; }
+/* keep the layout centred and sensibly sized when there are only 1–2 shows */
+.shows--single { grid-template-columns: minmax(0, 400px); justify-content: center; }
+.shows--two { grid-template-columns: repeat(2, minmax(0, 380px)); justify-content: center; }
+@media (max-width: 720px) { .shows--two { grid-template-columns: minmax(0, 400px); } }
+
+/* ---------- Past shows → Watch on YouTube ---------- */
+.pastshows { padding-top: 0; }
+.pastshows__card {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 2rem; flex-wrap: wrap;
+  background:
+    radial-gradient(ellipse 55% 120% at 100% 50%, rgba(224, 168, 60, 0.12), transparent 70%),
+    linear-gradient(150deg, #1a1420, #101018 70%);
+  border: 1px solid var(--line); border-radius: 20px;
+  padding: clamp(1.7rem, 4vw, 2.6rem) clamp(1.6rem, 4vw, 3rem);
+}
+.pastshows__text { max-width: 58ch; }
+.pastshows__text h2 { margin: 0.3rem 0 0.7rem; }
+.pastshows__text p { color: var(--ink-dim); font-weight: 300; font-size: 0.95rem; }
+.pastshows__btn { flex-shrink: 0; }
+.pastshows__btn svg { width: 20px; height: 20px; }
+@media (max-width: 720px) {
+  .pastshows__card { flex-direction: column; align-items: flex-start; }
+  .pastshows__btn { width: 100%; justify-content: center; }
+}
 
 .show-card {
   background: var(--bg-card);
@@ -455,6 +480,18 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
 
 .show-card__actions { margin-top: auto; display: grid; gap: 0.7rem; }
 .show-card__actions .btn { justify-content: center; }
+
+/* District = gold-outline "yellow frame" button (secondary to BookMyShow) */
+.btn--district {
+  background: transparent; color: var(--gold-bright);
+  border-color: var(--gold);
+}
+.btn--district:hover {
+  background: rgba(224, 168, 60, 0.12);
+  border-color: var(--gold-bright); color: var(--gold-bright);
+  transform: translateY(-2px);
+}
+
 .partner-links { display: flex; gap: 1.2rem; justify-content: center; }
 .partner-links a {
   font-size: 0.8rem; font-weight: 500; color: var(--ink-faint);
