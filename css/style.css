@@ -518,12 +518,10 @@ h2 em, h1 em { color: var(--gold); font-style: italic; }
 }
 .about__frame svg { width: 44%; color: var(--gold); opacity: 0.85; }
 .about__frame .about__logo { width: 56%; height: auto; object-fit: contain; filter: drop-shadow(0 6px 24px rgba(0,0,0,0.4)); }
-.about__logopanel {
-  width: min(62%, 260px);
-  background: #f7f3ea; border-radius: 16px; padding: 1.1rem 1.2rem;
-  box-shadow: 0 16px 44px rgba(0,0,0,0.5);
+.about__logo--full {
+  width: min(74%, 320px); height: auto; display: block; margin: 0 auto;
+  filter: drop-shadow(0 10px 34px rgba(0, 0, 0, 0.55));
 }
-.about__logo--full { width: 100%; height: auto; display: block; }
 .about__frame p {
   font-family: var(--font-display); font-style: italic;
   font-size: clamp(1.05rem, 1.8vw, 1.3rem); color: var(--ink-dim); line-height: 1.5;
